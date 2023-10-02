@@ -13,7 +13,8 @@ import "../styles/globals.css";
 config.autoAddCss = false;
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-inter",
+  // weight: "400"
 });
 
 // Entry point for the app

@@ -8,3 +8,7 @@
 .active-pill > span {
   @apply text-primary;
 }
+
+body{
+ font-family: Inter, sans-serif;
+}

@@ -22,7 +22,7 @@ export const SortPicker = ({ activeSort, sortOptions, onSortOrderSelect }: SortP
               className={`group mx-1 my-1 inline-block rounded-sm border px-2 py-1 text-sm ${
                 activeSort === sortOption
                   ? "active-pill"
-                  : "border-secondary transition-all transition-all hover:border-primary hover:text-primary"
+                  : "border-secondary transition-all hover:border-primary hover:text-primary"
               }`}
             >
               {sortOption}
