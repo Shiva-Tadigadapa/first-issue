@@ -18,6 +18,7 @@ export const SearchBar = () => {
         type="button"
         className="text-whitetransition-all inline-flex w-20 flex-shrink-0 items-center justify-center rounded-r-md border border-primary px-4 py-3 text-sm font-semibold transition-all hover:bg-primary"
         onClick={() =>
+          
           alert(
             `Show repositories that have "${query}" in the owner, name, language or tags or issue title`
           )
