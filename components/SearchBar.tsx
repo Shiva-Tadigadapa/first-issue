@@ -36,6 +36,7 @@ export const SearchBar = () => {
                   updateRepositorySortOrder( RepositorySortOrder.CUSTOM, query)
                 }
               >
+                
                 Search
               </button>
             ) : ( <button
