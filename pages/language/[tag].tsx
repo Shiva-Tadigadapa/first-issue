@@ -1,49 +1,20 @@
-import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { ParsedUrlQuery } from "querystring";
-
 import { RepositoryList } from "../../components/Repository/RepositoryList";
-import data from "../../data/data.json";
 import { useAppData } from "../../hooks/useAppData";
+import { useRouter } from "next/router"; // Import useRouter to get the tag from the route
 
-interface Params extends ParsedUrlQuery {
-  tag: string;
-}
-
-type LanguageProps = {
-  tag: Params["tag"];
-};
-
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  return {
-    paths: data.languages.map((language) => ({
-      params: { tag: language.id }
-    })),
-    fallback: false
-  };
-};
-
-export const getStaticProps: GetStaticProps<LanguageProps, Params> = async ({
-  params = {} as Params
-}) => {
-  return {
-    props: { tag: params.tag }
-  };
-};
-
-export default function Language({ tag }: LanguageProps) {
-  const { repositories, languages } = useAppData();
-
-  const language = languages.find((language) => language.id === tag);
-  const pageTitle = `First Issue | ${language?.display} Language`;
+export default function Language() {
+  const { repositories } = useAppData();
+  const router = useRouter();
+  const { tag } = router.query; // Get the tag from the route parameters
 
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
+        <title>First Issue | {tag} Language</title>
       </Head>
       <RepositoryList
-        repositories={repositories.filter((repository) => repository.language.id === tag)}
+        repositories={repositories} // Use filtered repositories directly
       />
     </>
   );
