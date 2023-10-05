@@ -1,15 +1,15 @@
 import React, { createContext, useEffect, useState } from "react";
 import data from "../data/data.json";
 import { AppData, CountableTag, Repository, RepositorySortOrder } from "../types";
-import { SortPicker } from "../components/Picker/SortPicker";
 
 const DEFAULT_VALUE: AppData = {
   languages: [],
   repositories: [],
   repositorySortOrder: RepositorySortOrder.NONE,
   tags: [],
-  // query: "",
-  updateRepositorySortOrder: ()=>{} 
+  updateRepositorySortOrder: () => {},
+  filterByTag: (tag: any) => [],
+  filterByLanguage: (tag: any) => []
 };
 
 const AppDataContext = createContext<AppData>(DEFAULT_VALUE);
@@ -30,30 +30,29 @@ const AppDataProvider = ({ children }: { children: React.ReactNode }) => {
     RepositorySortOrder.NONE
   );
   const [query, setQuery] = useState<string>("");
+  // console.log(repositorySortOrder);
 
   useEffect(() => {
-    updateRepositoriesOnQueryChange(query);
+    if (query !== "") {
+      updateRepositoriesOnQueryChange(query);
+    } else {
+      updateRepositoriesOnSortChange(repositorySortOrder);
+    }
   }, [query]);
 
   const updateRepositorySortOrder = (sortOrder: RepositorySortOrder, searchQuery?: string) => {
-    console.log("i am in up")
     if (searchQuery !== undefined) {
       setQuery(searchQuery);
-      console.log(searchQuery)
     }
 
     const isSetToDefaultSort = sortOrder === RepositorySortOrder.NONE;
-    console.log(isSetToDefaultSort)
+
     const shouldDeselect = !isSetToDefaultSort && sortOrder === repositorySortOrder;
-    console.log(shouldDeselect)
 
     const finalSortOrder = shouldDeselect ? RepositorySortOrder.NONE : sortOrder;
-    console.log(finalSortOrder)
-    console.log(sortOrder)
 
     setRepositorySortOrder(finalSortOrder);
     updateRepositoriesOnSortChange(finalSortOrder);
-    // updateRepositoriesOnQueryChange(query);
   };
 
   const updateRepositoriesOnSortChange = (sortOrder: RepositorySortOrder) => {
@@ -74,7 +73,6 @@ const AppDataProvider = ({ children }: { children: React.ReactNode }) => {
       updatedRepositories = allRepositories;
     }
 
-    // console.log(query)
     if (sortOrder === RepositorySortOrder.CUSTOM) {
       updatedRepositories = [...allRepositories].filter((currentRepository) => {
         return currentRepository.name.toLowerCase().includes(query.toLowerCase());
@@ -84,17 +82,32 @@ const AppDataProvider = ({ children }: { children: React.ReactNode }) => {
     setRepositories(updatedRepositories);
   };
 
-  const updateRepositoriesOnQueryChange = (query:any) => {
+  const updateRepositoriesOnQueryChange = (query: any) => {
     let updatedRepositories: Repository[] = [];
 
     if (query !== "") {
       updatedRepositories = [...allRepositories].filter((currentRepository) => {
         return currentRepository.name.toLowerCase().includes(query.toLowerCase());
       });
-    } 
-
+    }
     setRepositories(updatedRepositories);
-  }
+  };
+
+  const filterByTag = (tag: any) => {
+    let filteredRepos: Repository[] = [];
+    filteredRepos = [...allRepositories].filter((repository) => {
+      return repository.tags?.some((t) => t.id === tag);
+    });
+    return filteredRepos;
+  };
+
+  const filterByLanguage = (tag: any) => {
+    let filteredRepos: Repository[] = [];
+    filteredRepos = [...allRepositories].filter((repository) => {
+      return repository.language.id === tag;
+    });
+    return filteredRepos;
+  };
 
   const value = {
     languages,
@@ -102,8 +115,9 @@ const AppDataProvider = ({ children }: { children: React.ReactNode }) => {
     repositorySortOrder,
     tags,
     query,
-    updateRepositorySortOrder
-    // updateRepositoriesOnQueryChange,
+    updateRepositorySortOrder,
+    filterByTag,
+    filterByLanguage
   };
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

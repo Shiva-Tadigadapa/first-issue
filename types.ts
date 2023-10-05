@@ -50,7 +50,7 @@ export enum RepositorySortOrder {
   LEAST_STARS = "By Least Stars",
   MOST_STARS = "By Most Stars",
   CUSTOM = "Custom",
-  NONE = "None",
+  NONE = "None"
 }
 
 // Describes the data that is retrieved from the GitHub API and used by the app
@@ -59,6 +59,7 @@ export interface AppData {
   repositories: Repository[];
   repositorySortOrder: RepositorySortOrder;
   tags: CountableTag[];
-  // query: string;
-  updateRepositorySortOrder:(sortOrder: RepositorySortOrder,searchQuery?:any) => void;
+  updateRepositorySortOrder: (sortOrder: RepositorySortOrder, searchQuery?: any) => void;
+  filterByTag: (tag: any) => Repository[];
+  filterByLanguage: (language: any) => Repository[];
 }

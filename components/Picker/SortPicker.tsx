@@ -17,13 +17,13 @@ export const SortPicker = ({ activeSort, sortOptions, onSortOrderSelect }: SortP
         {sortOptions.map((sortOption) => {
           return (
             <button
-              key={sortOption}
-              onClick={() => onSortOrderSelect(sortOption)}
-              className={`group mx-1 my-1 inline-block rounded-sm border px-2 py-1 text-sm ${
-                activeSort === sortOption
-                  ? "active-pill"
-                  : "border-secondary transition-all hover:border-primary hover:text-primary"
-              }`}
+            key={sortOption}
+            onClick={() => onSortOrderSelect(sortOption)}
+            className={`group mx-1 my-1 inline-block rounded-sm border px-2 py-1 text-sm ${
+              activeSort === sortOption
+              ? "active-pill"
+              : "border-secondary transition-all hover:border-primary hover:text-primary"
+            }`}
             >
               {sortOption}
             </button>

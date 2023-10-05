@@ -1,21 +1,58 @@
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { RepositoryList } from "../../components/Repository/RepositoryList";
-import { useAppData } from "../../hooks/useAppData";
-import { useRouter } from "next/router"; // Import useRouter to get the tag from the route
+import { ParsedUrlQuery } from "querystring";
 
-export default function Tag() {
-  const { repositories } = useAppData();
-  const router = useRouter();
-  const { tag } = router.query; // Get the tag from the route parameters
+import { useEffect, useState } from "react";
+import { RepositoryList } from "../../components/Repository/RepositoryList";
+import data from "../../data/data.json";
+import { useAppData } from "../../hooks/useAppData";
+import { Repository } from "../../types";
+
+interface Params extends ParsedUrlQuery {
+  tag: string;
+}
+
+type TagProps = {
+  tag: Params["tag"];
+};
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  return {
+    paths: data.tags.map((tag) => ({
+      params: { tag: tag.id }
+    })),
+    fallback: false
+  };
+};
+
+export const getStaticProps: GetStaticProps<TagProps, Params> = async ({
+  params = {} as Params
+}) => {
+  return {
+    props: { tag: params.tag }
+  };
+};
+
+export default function Tag({ tag }: TagProps) {
+  const { tags, filterByTag } = useAppData();
+  const activeTag = tags.find((t) => t.id === tag);
+  const pageTitle = `First Issue | Tag ${activeTag?.display}`;
+  const [filteredRepositories, setFilteredRepositories] = useState<Repository[]>([]);
+
+  useEffect(() => {
+    // Filter repositories when the component mounts or when the tag changes
+    if (tag) {
+      const filtered = filterByTag(tag);
+      setFilteredRepositories(filtered);
+    }
+  }, [tag]);
 
   return (
     <>
       <Head>
-        <title>First Issue | Tag {tag}</title>
+        <title>{pageTitle}</title>
       </Head>
-      <RepositoryList
-        repositories={repositories} // Use filtered repositories directly
-      />
+      <RepositoryList repositories={filteredRepositories} />
     </>
   );
 }
